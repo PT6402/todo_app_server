@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.todo_app.model.Todo;
@@ -41,8 +42,8 @@ public class TodoController {
   }
 
   @PostMapping
-  public ResponseEntity<?> add(@RequestBody Todo todo) {
-    return todo_service.add(todo);
+  public ResponseEntity<?> add(@RequestParam String title) {
+    return todo_service.add(title);
   }
 
   @DeleteMapping("{id}")
@@ -50,8 +51,9 @@ public class TodoController {
     return todo_service.remove(id);
   }
 
-  @PutMapping("completed/{id}")
-  public ResponseEntity<?> updateCompleted(@PathVariable int id, @PathParam("isComleted") boolean isCompleted) {
-    return todo_service.updateComplete(id, isCompleted);
+  @DeleteMapping("clear-all")
+  public ResponseEntity<?> delete() {
+    return todo_service.clearAll();
   }
+
 }

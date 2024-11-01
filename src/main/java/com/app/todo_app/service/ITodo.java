@@ -11,11 +11,12 @@ public interface ITodo {
 
   ResponseEntity<?> getOne(int id);
 
-  ResponseEntity<?> add(Todo todo);
+  ResponseEntity<?> add(String title);
 
   ResponseEntity<?> remove(int id);
 
   ResponseEntity<?> update(int id, Todo todo);
 
-  ResponseEntity<?> updateComplete(int id, boolean isCompleted);
+  ResponseEntity<?> clearAll();
+
 }

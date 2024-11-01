@@ -30,11 +30,12 @@ public class TodoService implements ITodo {
   }
 
   @Override
-  public ResponseEntity<?> add(Todo todo) {
+  public ResponseEntity<?> add(String title) {
     try {
-      if (todoRepo.findByTitle(todo.getTitle()).isPresent()) {
+      if (todoRepo.findByTitle(title).isPresent()) {
         throw new Exception("is already");
       }
+      Todo todo = Todo.builder().title(title).isCompleted(false).build();
       Todo savedTodo = todoRepo.save(todo);
       return ResponseEntity.ok(savedTodo);
     } catch (Exception e) {
@@ -59,11 +60,16 @@ public class TodoService implements ITodo {
       Todo checkTodo = todoRepo.findById(id).orElseThrow(() -> new Exception("not found"));
 
       if (todoRepo.findByTitle(todo.getTitle()).isPresent()) {
-        throw new Exception("is already title");
+        if (!todo.getTitle().equals(checkTodo.getTitle())) {
+          throw new Exception("is already title");
+        }
       }
-      checkTodo.setTitle(todo.getTitle());
-      checkTodo.setNote(todo.getNote());
-
+      if (todo.getTitle() != null) {
+        checkTodo.setTitle(todo.getTitle());
+      }
+      if (todo.getIsCompleted() != null) {
+        checkTodo.setIsCompleted(todo.getIsCompleted());
+      }
       todoRepo.save(checkTodo);
       return ResponseEntity.ok(checkTodo);
     } catch (Exception e) {
@@ -72,12 +78,10 @@ public class TodoService implements ITodo {
   }
 
   @Override
-  public ResponseEntity<?> updateComplete(int id, boolean isCompleted) {
+  public ResponseEntity<?> clearAll() {
     try {
-      Todo checkTodo = todoRepo.findById(id).orElseThrow(() -> new Exception("not found"));
-      checkTodo.setIsCompleted(isCompleted);
-      Todo savedTodo = todoRepo.save(checkTodo);
-      return ResponseEntity.ok(savedTodo);
+      todoRepo.deleteAll();
+      return ResponseEntity.ok("clear all success");
     } catch (Exception e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
